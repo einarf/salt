@@ -54,7 +54,7 @@ def temp_directory(name=None):
 
 @pytest.helpers.register
 @contextmanager
-def temp_file(name, contents=None, directory=None, strip_first_newline=True):
+def temp_file(name=None, contents=None, directory=None, strip_first_newline=True):
     """
     This helper creates a temporary file. It should be used as a context manager
     which returns the temporary file path, and, once out of context, deletes it.
@@ -88,6 +88,12 @@ def temp_file(name, contents=None, directory=None, strip_first_newline=True):
     try:
         if directory is None:
             directory = RUNTIME_VARS.TMP
+
+        if name is not None:
+            file_path = os.path.join(directory, name)
+        else:
+            handle, file_path = tempfile.mkstemp(dir=directory)
+            os.close(handle)
 
         file_path = os.path.join(directory, name)
         file_directory = os.path.dirname(file_path)

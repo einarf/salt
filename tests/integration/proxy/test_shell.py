@@ -9,6 +9,7 @@ from __future__ import absolute_import, print_function, unicode_literals
 
 import json
 import logging
+import os
 import sys
 
 import salt.ext.six as six
@@ -26,6 +27,15 @@ class ProxyCallerSimpleTestCase(ShellCase):
     """
 
     RUN_TIMEOUT = 300
+
+    @classmethod
+    def tearDownClass(cls):
+        proxy_key_file = os.path.join(
+            RUNTIME_VARS.RUNTIME_CONFIGS["master"]["pki_dir"], "minions", "proxytest"
+        )
+        log.debug("Proxy minion key path: %s", proxy_key_file)
+        if os.path.exists(proxy_key_file):
+            os.unlink(proxy_key_file)
 
     @staticmethod
     def _load_return(ret):

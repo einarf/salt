@@ -4,14 +4,29 @@ Simple Smoke Tests for Connected Proxy Minion
 """
 from __future__ import absolute_import, print_function, unicode_literals
 
+import logging
+import os
+
 from tests.support.case import ModuleCase
 from tests.support.helpers import slowTest
+from tests.support.runtests import RUNTIME_VARS
+
+log = logging.getLogger(__name__)
 
 
 class ProxyMinionSimpleTestCase(ModuleCase):
     """
     Test proxy minion functionality
     """
+
+    @classmethod
+    def tearDownClass(cls):
+        proxy_key_file = os.path.join(
+            RUNTIME_VARS.RUNTIME_CONFIGS["master"]["pki_dir"], "minions", "proxytest"
+        )
+        log.debug("Proxy minion key path: %s", proxy_key_file)
+        if os.path.exists(proxy_key_file):
+            os.unlink(proxy_key_file)
 
     def test_can_it_ping(self):
         """
